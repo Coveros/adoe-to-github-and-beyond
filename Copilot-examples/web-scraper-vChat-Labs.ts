@@ -5,7 +5,9 @@
 // Define a class named WebScraper
 class WebScraper {
     // The constructor takes a single parameter named url
-    constructor(url) {
+    url: string;
+
+    constructor(url: string) {
         // Store the url in an instance variable named url
         this.url = url;
     }
@@ -34,8 +36,8 @@ class WebScraper {
         // Loop through all of the links
         for (let i: number = 0; i < links.length; i++) {
             // Get the href and textContent of the link
-            const link: string = links[i].href;
-            const title: string = links[i].textContent.trim();
+            const link: string | null = links[i].href;
+            const title: string | null = links[i].textContent?.trim() ?? null;
 
             // If the link starts with "http" and has a title
             if (link && link.startsWith("http") && title) {

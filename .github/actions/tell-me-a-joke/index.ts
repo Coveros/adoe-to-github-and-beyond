@@ -59,7 +59,7 @@ export async function run() {
                     repo: wfEvent.repository.name,
                     title: `${issue.user?.name || issue.user?.login}: Do you want to hear a joke?`,
                     labels: labels,
-                    assignees: [issue.user?.login || ""],
+                    assignees: [issue.user?.login || "coveros-phil"],
                     body: msg,
                 });
 
@@ -68,6 +68,10 @@ export async function run() {
         } else if (github.context.eventName === "issue_comment") {
             const icEvent = github.context.payload as IssueCommentEvent;
             let msg = "";
+
+            if (icEvent.issue.labels.find((l) => l.name === "Icebreaker")) {
+                return;
+            }
 
             if (icEvent.issue.labels.find((l) => l.name === "Too Spicy")) {
                 // If they are Too Spicy don't tell them a joke and instead do something else

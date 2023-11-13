@@ -1,8 +1,19 @@
+/**
+ * A class representing a web scraper.
+ */
 class WebScraper {
+    /**
+     * Creates a new instance of the WebScraper class.
+     * @param {string} url - The URL of the website to scrape.
+     */
     constructor(url) {
         this.url = url;
     }
 
+    /**
+     * Scrapes the website for links and page titles.
+     * @returns {Promise<Array<{pageTitle: string, link: string}>>} - A promise that resolves to an array of objects containing page titles and links.
+     */
     async scrape() {
         const response = await fetch(this.url);
         const text = await response.text();

@@ -21,10 +21,11 @@ on:
   #schedule:
   #  - cron: '39 9 * * 6'
 
+permissions: write-all
 jobs:
   analyze:
     name: Analyze
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
 
     strategy:
@@ -75,12 +76,12 @@ jobs:
     
       # Build Java
       # https://github.com/marketplace/actions/setup-java-jdk#Usage
-      - if: matrix.language == 'java-kotlin'
-        name: Build Java Version 'X' (See Doc for other details)
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'microsoft' # See 'Supported distributions' for available options
-          java-version: '16'
+      # - if: matrix.language == 'java-kotlin'
+      #   name: Build Java Version 'X' (See Doc for other details)
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     distribution: 'microsoft' # See 'Supported distributions' for available options
+      #     java-version: '16'
       # - run: java HelloWorldApp.java
       # End of Java Build Example 
 
@@ -99,11 +100,11 @@ jobs:
       #     echo "Run, Build Application using script"
       #     ./location_of_script_within_repo/buildscript.sh
 
-      - name: Perform CodeQL Analysis
+      - name: Perform CodeQL Analysis 
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
-          output: results
+          # output: results
 
       # - name: Upload SARIF file
       #   uses: github/codeql-action/upload-sarif@v2

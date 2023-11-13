@@ -1,0 +1,70 @@
+<!-- FILEPATH: /Users/plaffy/Documents/GitHub/Repos/adoe-to-github-and-beyond_conference/Copilot-examples/Ididthisinclass.html -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>7-Day Weather Forecast</title>
+        <!-- Bootstrap CSS CDN -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous" />
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="text-center my-5">7-Day Weather Forecast</h1>
+            <form class="form-inline justify-content-center mb-5">
+                <label class="sr-only" for="zipcode">Zipcode</label>
+                <input type="text" class="form-control mb-2 mr-sm-2" id="zipcode" placeholder="Enter Zipcode" />
+                <button type="submit" class="btn btn-primary mb-2">Submit</button>
+            </form>
+            <div class="row" id="weather-forecast"></div>
+        </div>
+        <!-- Bootstrap JS CDN -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper-core.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script>
+            // Aeris API credentials
+            const clientId = "sQuIACRp01jWgBrv7yXLC";
+            const clientSecret = "eRhZfQPRNrA1b6oq5f3K2kF1dfR7GrQVQlG8X8gq";
+
+            // Get the 7-day forecast for New York City
+            const getForecast = (zipcode) => {
+                const endpoint = `https://api.aerisapi.com/forecasts/${zipcode}?client_id=${clientId}&client_secret=${clientSecret}`;
+
+                // Fetch the forecast data from the Aeris API
+                fetch(endpoint)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Get the daily forecast data
+                        const forecast = data.response[0].periods;
+
+                        // Loop through the forecast data and create a card for each day
+                        forecast.forEach((day) => {
+                            // Create a new card element
+                            const card = document.createElement("div");
+                            card.classList.add("col-md-4");
+                            card.innerHTML = `
+                                <div class="card col-md-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${new Date(day.validTime).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</h5>
+                                        <p class="card-text">${day.weatherPrimary}, high of ${day.maxTempF}°F, low of ${day.minTempF}°F</p>
+                                    </div>
+                                </div>
+                            `;
+
+                            // Add the card to the weather forecast container
+                            document.getElementById("weather-forecast").appendChild(card);
+                        });
+                    })
+                    .catch((error) => console.error(error));
+            };
+
+            // Handle form submission
+            const form = document.querySelector("form");
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const zipcode = document.getElementById("zipcode").value;
+                getForecast(zipcode);
+            });
+        </script>
+    </body>
+</html>

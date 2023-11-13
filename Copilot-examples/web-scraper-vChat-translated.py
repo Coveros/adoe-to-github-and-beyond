@@ -1,21 +1,24 @@
 # Translated from javascript using the Copilot Labs translate tool
-class WebScraper:
-    def __init__(self, url):
-        self.url = url
+    import aiohttp
+    from bs4 import BeautifulSoup
 
-    async def scrape(self):
-        response = await fetch(self.url)
-        text = await response.text()
-        parser = DOMParser()
-        htmlDoc = parser.parseFromString(text, "text/html")
-        links = htmlDoc.getElementsByTagName("a")
-        results = []
+    class WebScraper:
+        def __init__(self, url):
+            self.url = url
 
-        for i in range(0, len(links)):
-            link = links[i].href
-            title = links[i].textContent.trim()
+        async def scrape(self):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.url) as response:
+                    text = await response.text()
+                    soup = BeautifulSoup(text, 'html.parser')
+                    links = soup.find_all('a')
+                    results = []
 
-            if link and link.startswith("http") and title:
-                results.push({"pageTitle": title, "link": link})
+                    for link in links:
+                        href = link.get('href')
+                        title = link.string
 
-        return results
+                        if href and href.startswith("http") and title:
+                            results.append({"pageTitle": title.strip(), "link": href})
+
+                    return results

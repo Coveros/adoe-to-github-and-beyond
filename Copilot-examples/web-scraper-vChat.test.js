@@ -50,3 +50,41 @@ describe('test web_scraper_vChat', function() {
             });
     })
 })
+describe("WebScraper", () => {
+  it("should return an array of links", async () => {
+    const scraper = new WebScraper("https://www.google.com");
+    const links = await scraper.scrape();
+    expect(Array.isArray(links)).toBe(true);
+  });
+
+  it("should return an array of JSON objects with pageTitle and link properties", async () => {
+    const scraper = new WebScraper("https://www.google.com");
+    const links = await scraper.scrape();
+    expect(links.every((link) => "pageTitle" in link && "link" in link)).toBe(
+      true
+    );
+  });
+
+  it("should only return links that start with http", async () => {
+    const scraper = new WebScraper("https://www.google.com");
+    const links = await scraper.scrape();
+    expect(links.every((link) => link.link.startsWith("http"))).toBe(true);
+  });
+
+  it("should only return links that have a title", async () => {
+    const scraper = new WebScraper("https://www.google.com");
+    const links = await scraper.scrape();
+    expect(links.every((link) => link.pageTitle)).toBe(true);
+  });
+
+  it("should return an empty array if there are no links on the page", async () => {
+    const scraper = new WebScraper("https://www.github.com");
+    const links = await scraper.scrape();
+    expect(links.length).toBe(0);
+  });
+
+  it("should throw an error if the URL is invalid", async () => {
+    const scraper = new WebScraper("invalid-url");
+    await expect(scraper.scrape()).rejects.toThrow();
+  });
+});
